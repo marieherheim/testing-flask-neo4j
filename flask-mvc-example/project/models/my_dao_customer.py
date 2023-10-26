@@ -1,8 +1,8 @@
-from neo4j import GraphDatabase, Driver, AsyncGraphDatabase, AsyncDriver
+from neo4j import GraphDatabase, Driver
 import json
 
-URI = "neo4j+s://c6387231.databases.neo4j.io"
-AUTH = ("neo4j", "S2OBk4iLfXnoPnRHlIkSzC6IhpjKP2AxcjP05YVE2mo")
+URI = "neo4j+s://neo4j@dcb0dbcc.databases.neo4j.io"
+AUTH = ("neo4j", "L_2jcKHhY8zKU9sMAJpapHAXmsMfDNFfkJfZeTns2yY")
 
 def _get_connection() -> Driver:
     driver = GraphDatabase.driver(URI, auth=AUTH)
@@ -13,9 +13,9 @@ def node_to_json(node):
     node_properties = dict(node.items())
     return node_properties
 
-def save_customer(name, age, address):
+def save_customer(name, age, address, drivers_licence):
     with _get_connection().session() as session:
-        customers = session.run("MERGE (c:Customer{name: $name, age: $age, address: $address}) RETURN c;", name=name, age=age, address=address)
+        customers = session.run("MERGE (c:Customer{name: $name, age: $age, address: $address, drivers_licence: $drivers_licence}) RETURN c;", name=name, age=age, address=address, drivers_licence=drivers_licence)
         nodes_json = [node_to_json(record["c"]) for record in customers]
         return nodes_json
 
@@ -31,12 +31,12 @@ def findCustomerByName(name):
         nodes_json = [node_to_json(record["c"]) for record in customers]
         return nodes_json
 
-def update_customer(name, age, address):
+def update_customer(name, age, address, drivers_licence):
     with _get_connection().session() as session:
-        customers = session.run("MATCH (c:Customer{name:$name}) set c.age=$age, c.address=$address RETURN c;", name=name, age=age, address=address)
+        customers = session.run("MATCH (c:Customer{name:$name}) SET c.age=$age, c.address=$address, c.drivers_licence=$drivers_licence RETURN c;", name=name, age=age, address=address, drivers_licence=drivers_licence)
         nodes_json = [node_to_json(record["c"]) for record in customers]
         return nodes_json
 
 def delete_customer(name):
     with _get_connection().session() as session:
-        session.run("MATCH (c:Customer{name: $name}) delete c;", name=name)
+        session.run("MATCH (c:Customer{name: $name}) DELETE c;", name=name)
