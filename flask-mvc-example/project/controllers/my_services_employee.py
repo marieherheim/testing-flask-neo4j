@@ -5,7 +5,7 @@ from project.models.my_dao_employee import *
 
 # get employees
 @app.route('/get_employees', methods=['GET'])
-def query_records():
+def query_records_employees():
     return findAllEmployees()
 
 # get an employee by employee_id

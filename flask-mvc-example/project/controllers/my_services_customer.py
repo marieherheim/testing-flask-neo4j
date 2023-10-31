@@ -5,7 +5,7 @@ from project.models.my_dao_customer import *
 
 # get all customers
 @app.route('/get_customers', methods=['GET'])
-def query_records():
+def query_records_customers():
     return findAllCustomers()
 
 # get a customer by name
@@ -18,7 +18,7 @@ def find_customer_by_name():
 @app.route('/save_customer', methods=["POST"])
 def save_customer_info():
     record = json.loads(request.data)
-    return save_customer(record['name'], record['age'], record['address'])
+    return save_customer(record['name'], record['age'], record['address'], record["drivers_licence"])
 
 # update a customer's information by name
 @app.route('/update_customer', methods=['PUT'])
